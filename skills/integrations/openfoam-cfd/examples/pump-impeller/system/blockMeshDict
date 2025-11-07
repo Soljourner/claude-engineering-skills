@@ -1,0 +1,96 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+| =========                 |                                                 |
+| \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox           |
+|  \\    /   O peration     | Version:  11                                    |
+|   \\  /    A nd           | Web:      www.OpenFOAM.org                      |
+|    \\/     M anipulation  |                                                 |
+\*---------------------------------------------------------------------------*/
+FoamFile
+{
+    version     2.0;
+    format      ascii;
+    class       dictionary;
+    object      blockMeshDict;
+}
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+convertToMeters 1;
+
+// Simplified 2D pump geometry
+// Inner radius: 0.05 m, Outer radius: 0.15 m, Height: 0.2 m
+
+vertices
+(
+    // Inner circle vertices (z=0)
+    (0.05  0      0)     // 0
+    (0.15  0      0)     // 1
+    (0.15  0.2    0)     // 2
+    (0.05  0.2    0)     // 3
+
+    // Inner circle vertices (z=0.01)
+    (0.05  0      0.01)  // 4
+    (0.15  0      0.01)  // 5
+    (0.15  0.2    0.01)  // 6
+    (0.05  0.2    0.01)  // 7
+);
+
+blocks
+(
+    hex (0 1 2 3 4 5 6 7) (40 40 1) simpleGrading (1 1 1)
+);
+
+edges
+(
+);
+
+boundary
+(
+    inlet
+    {
+        type patch;
+        faces
+        (
+            (0 4 7 3)
+        );
+    }
+    outlet
+    {
+        type patch;
+        faces
+        (
+            (1 2 6 5)
+        );
+    }
+    impeller
+    {
+        type wall;
+        faces
+        (
+            (0 1 5 4)
+        );
+    }
+    casing
+    {
+        type wall;
+        faces
+        (
+            (3 7 6 2)
+        );
+    }
+    frontAndBack
+    {
+        type empty;
+        faces
+        (
+            (0 3 2 1)
+            (4 5 6 7)
+        );
+    }
+);
+
+mergePatchPairs
+(
+);
+
+
+// ************************************************************************* //
